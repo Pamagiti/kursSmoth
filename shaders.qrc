@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fshaders.fsh</file>
+        <file>vshaders.vsh</file>
+        <file>cubbbbbbb.jpg</file>
+    </qresource>
+</RCC>
