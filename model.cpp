@@ -32,17 +32,17 @@ void model::loadObj(QString filename)
 
 void model::DrawObject()
 {
-
-   // glBufferData(GL_ARRAY_BUFFER, list_vertices.size() * sizeof(QVector3D), &list_vertices[0], GL_STATIC_DRAW);
-    glBegin(GL_TRIANGLES);
-        glColor3f(0.0f, 0.0f, 1.0f);
-        for (int i = 0; i < list_vertices.size(); i++){
-            //int num = face.at(i).id_vertices;
-
-            lVertices tmp = list_vertices.at(i);
-            glVertex3f(tmp.x, tmp.y, tmp.z);
-        }
-    glEnd();
+    //glMatrixMode(GL_MODELVIEW);
+//    glBegin(GL_POINTS);
+//        glPointSize(5);
+//        glColor3f(0.0f, 0.0f, 0.0f);
+//        for (int i = 0; i < list_vertices.size(); i++){
+//            GLfloat x = list_vertices.at(i).x;
+//            GLfloat y = list_vertices.at(i).y;
+//            GLfloat z = list_vertices.at(i).z;
+//            glVertex3f(x, y, z);
+//        }
+//    glEnd();
 }
 
 void model::record(const QString &line)
@@ -76,7 +76,6 @@ void model::readVerticex(const QString &line)
     vert.z = list.at(3).toFloat();
 
     list_vertices.push_back(vert);
-
     p++;
 }
 
@@ -133,51 +132,55 @@ void model::readSpaceVert(const QString &line)
 
 void model::readFace(const QString &line)
 {
-    int fc = 0;
     QStringList list;
     Face f;
 
     // f.id_mtl = usemtl.size();
 
     list = line.split(QRegExp(" "));
+    //qDebug() << list;
+
+    if (list.last() == "\r\n"){
+        countFace = list.size() - 2;
+        list.removeAt(list.indexOf(list.last()));} else countFace = list.size() - 1;
+    //qDebug() << countFace;
     QStringList list_value;
     if (m_texture_coord && !m_normal)
     {
+
         // f 1/1 2/2 3/3
-        for(int i = 1; i < list.size(); ++i)
+        for(int i = 1; i < countFace + 1; ++i)
         {
             list_value = list.at(i).split(QRegExp("/"));
-
-            if (list_value.size() != 1)
+            //qDebug() << list_value;
+            if (list_value.size() != 0)
             {
-                f.id_vertices = list_value.at(0).toInt();
-                f.id_textur_coordinat = list_value.at(1).toInt();
-//                qDebug() << f.id_vertices;
-//                qDebug() << f.id_textur_coordinat;
-//                qDebug() << "прогон" << i;
+                f.id_vertices = list_value.at(0).toInt() - 1;
+                f.id_textur_coordinat = list_value.at(1).toInt() - 1;
+                f.id_normal = 0;
+                count++;
             }
             face.push_back(f);
         }
     } else if (!m_texture_coord && m_normal)
     {
-        for(int i = 0; i < list.size(); ++i)
+        for(int i = 1; i < countFace + 1; ++i)
         {
+
             // f 1//1 2//2 3//3
             list_value = list.at(i).split(QRegExp("/"));
-
-            if (list_value.size() != 1)
+            if (list_value.size() != 0)
             {
-                f.id_vertices = list_value.at(0).toInt();
-                f.id_normal = list_value.at(2).toInt();
-//                qDebug() << f.id_vertices;
-//                qDebug() << f.id_normal;
-//                qDebug() << "прогон" << i;
+                f.id_vertices = list_value.at(0).toInt() - 1;
+                f.id_textur_coordinat = 0;
+                f.id_normal = list_value.at(2).toInt() - 1;
+                count++;
             }
             face.push_back(f);
         }
     } else if (m_texture_coord && m_normal)
     {
-        for(int i = 0; i < list.size(); ++i)
+        for(int i = 1; i < countFace + 1; ++i)
         {
             // f 1/1/1 2/2/2 3/3/3
             //qDebug() << "ну вот все в сборе";
@@ -185,13 +188,10 @@ void model::readFace(const QString &line)
 
             if (list_value.size() != 1)
             {
-                f.id_vertices = list_value.at(0).toInt();
-                f.id_textur_coordinat = list_value.at(1).toInt();
-                f.id_normal = list_value.at(2).toInt();
-//                qDebug() << f.id_vertices;
-//                qDebug() << f.id_textur_coordinat;
-//                qDebug() << f.id_normal;
-//                qDebug() << "прогон" << i;
+                f.id_vertices = list_value.at(0).toInt() - 1;
+                f.id_textur_coordinat = list_value.at(1).toInt() - 1;
+                f.id_normal = list_value.at(2).toInt() - 1;
+                count++;
             }
             face.push_back(f);
         }
@@ -365,20 +365,20 @@ bool model::isblank(const QChar &ch)
     return (ch == ' ' || ch == '\t');
 }
 
-int model::get_normal_index(int index, QString name)
-{
-    if (index < 0)
-    {
-        if (name == "id_vertices")
-            return list_vertices.size() - ((index * -1) - 1);
-        else if (name == "id_textur_coordinat")
-            return list_texture.size() - ((index * - 1) - 1);
-        else if (name == "id_normal")
-            return list_normal.size() - ((index * -1) - 1);
-    }
+//int model::get_normal_index(int index, QString name)
+//{
+//    if (index < 0)
+//    {
+//        if (name == "id_vertices")
+//            return list_vertices.size() - ((index * -1) - 1);
+//        else if (name == "id_textur_coordinat")
+//            return list_texture.size() - ((index * - 1) - 1);
+//        else if (name == "id_normal")
+//            return list_normal.size() - ((index * -1) - 1);
+//    }
 
-    return index;
-}
+//    return index;
+//}
 
 
 

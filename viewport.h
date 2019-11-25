@@ -14,7 +14,7 @@
 
 #include "model.h"
 
-struct VertexData //Структура с информацией о вершинах
+struct VertexData
 {
     VertexData() //Конструктор по умолчанию не принимающий аргументы
     {
@@ -36,8 +36,9 @@ public:
     viewport(QWidget *parent = nullptr);
     ~viewport();
 
-    void mousePressEvent(QMouseEvent* pe);
-    void mouseMoveEvent(QMouseEvent* pe);
+    void mousePressEvent(QMouseEvent *pe);
+    void mouseMoveEvent(QMouseEvent *pe);
+    //void mouseMoveEvent(QMouseEvent *pe);
     void wheelEvent(QWheelEvent* pe);
     void keyPressEvent(QKeyEvent* pe);
 
@@ -63,6 +64,8 @@ private:
     GLfloat angle_y;
     GLfloat translate;
     GLfloat del;
+    GLfloat translateX;
+    GLfloat translateY;
 
     QPoint ptrMousePosition;
 
@@ -77,6 +80,11 @@ private:
     void defaultScene();
 
     model obj;
+
+    QVector2D m_mousePosition;
+    QVector2D m_mousePositionT;
+    QQuaternion m_rotationX;
+    QQuaternion m_rotationY;
 
     ///
     QMatrix4x4 m_projectionMatrix;

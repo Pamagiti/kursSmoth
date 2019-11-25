@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    mathobject.cpp \
     model.cpp \
     viewport.cpp
 
 HEADERS += \
     mainwindow.h \
+    mathobject.h \
     model.h \
     viewport.h
 

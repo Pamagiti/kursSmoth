@@ -7,6 +7,20 @@
 #include <QVector>
 
 
+//struct VertexData //Структура с информацией о вершинах
+//{
+//    VertexData() //Конструктор по умолчанию не принимающий аргументы
+//    {
+//    }
+//    VertexData(QVector3D p, QVector2D t, QVector3D n):
+//        position(p), textCoord(t), normal(n)
+//    {//Конструктор с списком инициализации
+//    }
+//    QVector3D position; //позиция
+//    QVector2D textCoord; //текстурные координаты
+//    QVector3D normal; //нормали
+//};
+
 struct lVertices
 {
     float x;
@@ -22,9 +36,9 @@ struct TexturCord
 
 struct Normal
 {
-    float x;
-    float y;
-    float z;
+    float x = 0;
+    float y = 0;
+    float z = 0;
 };
 
 struct SpaceV
@@ -58,7 +72,10 @@ public:
     Normal norm;
     Face ind;
 
+    GLint count = 0;
 
+    bool m_texture_coord = false; // is vt?
+    bool m_normal = false; // is vn?
 
     QVector<lVertices> list_vertices; //v
     QVector<TexturCord> list_texture; //vt
@@ -67,6 +84,7 @@ public:
     QVector<Face> face; //f
     QVector<QString> mtl;                   // mtlib
     QVector<QString> usemtl;
+    int countFace = 0;
 
 private:
     void record(const QString &line);
@@ -81,7 +99,5 @@ private:
     bool isblank(const QChar &ch);
     int get_normal_index(int index, QString name);
 
-    bool m_texture_coord = false; // is vt?
-    bool m_normal = false; // is vn?
 };
 #endif // MODEL_H
